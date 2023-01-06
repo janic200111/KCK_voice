@@ -2,29 +2,29 @@ from __future__ import division
 from matplotlib import pylab as plt
 import numpy as np
 import scipy.io.wavfile
-from scipy.signal import kaiser, decimate
+from scipy.sig import kaiser, decimate
 from copy import copy
 import os, re
 import sys
 
 def analyze_wav(filename):
-  sampling_rate, signal = scipy.io.wavfile.read(filename)
-  samples_count = len(signal)
-  duration = float(samples_count) / sampling_rate
-  if not isinstance(signal[0], np.int16):
-    signal = [s[0] for s in signal]
-  signal = signal * kaiser(samples_count, 100)
+  sampling_rate, sig = scipy.io.wavfile.read(filename)
+  smp_cnt = len(sig)
+  duration = float(smp_cnt) / sampling_rate
+  if not isinstance(sig[0], np.int16):
+    sig = [s[0] for s in sig]
+  sig = sig * kaiser(smp_cnt, 100)
 
-  spectrum = np.log(abs(np.fft.rfft(signal)))
-  hps = copy(spectrum)
+  spc = np.log(abs(np.fft.rfft(sig)))
+  hps = copy(spc)
   for h in np.arange(2, 6):
-    dec = decimate(spectrum, h)
+    dec = decimate(spc, h)
     hps[:len(dec)] += dec
   peak_start = 50 * duration
   peak = np.argmax(hps[int(peak_start):])
-  fundamental = (peak_start + peak) / duration
+  verdict = (peak_start + peak) / duration
 
-  return 'M' if fundamental < 165 else 'K'
+  return 'M' if verdict < 165 else 'K'
 
 
 try:
