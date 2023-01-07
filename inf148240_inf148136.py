@@ -41,7 +41,10 @@ def analyze_wav(filename):
 # print(recognized)
 
 try:
-    filename = os.path.basename(sys.argv[1])
-    print(analyze_wav(filename))
+  filename = os.path.basename(sys.argv[1])
+  path = sys.argv[1].strip(filename)
+  if path !="":
+    os.chdir(path)
+  print(analyze_wav(filename))
 except:
     print("K")
